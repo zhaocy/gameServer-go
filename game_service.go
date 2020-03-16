@@ -15,7 +15,7 @@ import (
 	"os"
 	"strings"
 
-	conf "github.com/zhaocy/gameServer-go/config"
+	conf "github.com/zhaocy/commonlibs/config"
 	"github.com/zhaocy/gameServer-go/defines"
 	"github.com/zhaocy/gameServer-go/log"
 	"github.com/zhaocy/gameServer-go/message"
