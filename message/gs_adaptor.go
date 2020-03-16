@@ -6,7 +6,7 @@ import (
 	"github.com/zhaocy/commonlibs/servers"
 	"sync"
 
-	"github.com/matchvs/gameServer-go/src/log"
+	"github.com/zhaocy/gameServer-go/log"
 )
 
 type GSAdaptor struct {
