@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	matchvs "github.com/matchvs/gameServer-go"
-	"github.com/matchvs/gameServer-go/example/app"
+	matchvs "github.com/zhaocy/gameServer-go"
+	"github.com/zhaocy/gameServer-go/example/app"
 )
 
 func Test_MainServer(t *testing.T) {

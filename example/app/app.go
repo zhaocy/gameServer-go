@@ -1,128 +1,148 @@
-package test
+/*
+ * @Company: Matchvs
+ * @Author: Ville
+ * @Date: 2018-11-28 14:30:33
+ * @LastEditors: Ville
+ * @LastEditTime: 2018-12-24 17:03:14
+ * @Description: game server handler module, the struct of  App  implemente the interface which is located in game_server.go
+ 				 it is named BaseInterface
+*/
+
+package app
 
 import (
 	"encoding/json"
 	"strconv"
 
-	matchvs "github.com/zhaocy/gameServer-go"
+	"github.com/zhaocy/gameServer-go"
 	"github.com/zhaocy/gameServer-go/defines"
 	"github.com/zhaocy/gameServer-go/log"
 )
 
-type GsDefaultHandler struct {
+type App struct {
 	counter uint32
 	push    matchvs.PushHandler
 }
 
-func (self *GsDefaultHandler) SetPushHandler(push matchvs.PushHandler) {
+func NewApp() *App {
+	app := &App{
+		counter: 0,
+	}
+	return app
+}
+
+func (self *App) SetPushHandler(push matchvs.PushHandler) {
 	self.push = push
 }
 
 // 创建房间回调
-func (d *GsDefaultHandler) OnCreateRoom(req *defines.MsOnCreateRoom) (err error) {
+func (d *App) OnCreateRoom(req *defines.MsOnCreateRoom) (err error) {
 	log.LogD(" OnCreateRoom %v", req)
 	return
 }
 
 // 加入房间回调
-func (d *GsDefaultHandler) OnJoinRoom(req *defines.MsOnJoinRoom) (err error) {
+func (d *App) OnJoinRoom(req *defines.MsOnJoinRoom) (err error) {
 	log.LogD(" OnJoinRoom %v", req)
 	return
 }
 
 // 关闭房间回调
-func (d *GsDefaultHandler) OnJoinOver(req map[string]interface{}) (err error) {
+func (d *App) OnJoinOver(req map[string]interface{}) (err error) {
 	log.LogD(" OnJoinOver %v", req)
 	return
 }
 
 // 打开房间回调
-func (d *GsDefaultHandler) OnJoinOpen(req map[string]interface{}) (err error) {
+func (d *App) OnJoinOpen(req map[string]interface{}) (err error) {
 	log.LogD(" OnJoinOpen %v", req)
 	return
 }
 
 // 离开房间回调
-func (d *GsDefaultHandler) OnLeaveRoom(req map[string]interface{}) (err error) {
+func (d *App) OnLeaveRoom(req map[string]interface{}) (err error) {
 	log.LogD(" OnLeaveRoom %v", req)
 	return
 }
 
 // 踢人回调
-func (d *GsDefaultHandler) OnKickPlayer(req map[string]interface{}) (err error) {
+func (d *App) OnKickPlayer(req map[string]interface{}) (err error) {
 	log.LogD(" OnKickPlayer %v", req)
 	return
 }
 
 // 连接状态回调
-func (d *GsDefaultHandler) OnUserState(req map[string]interface{}) (err error) {
+func (d *App) OnUserState(req map[string]interface{}) (err error) {
 	log.LogD(" OnUserState %v", req)
 	return
 }
 
 // 获取房间信息回调
-func (d *GsDefaultHandler) OnRoomDetail(req *defines.MsRoomDetail) (err error) {
-	log.LogD("OnRoomDetail %v", req)
+func (d *App) OnRoomDetail(req *defines.MsRoomDetail) (err error) {
+	jsonbuf, _ := json.Marshal(req)
+	log.LogD("OnRoomDetail %v", string(jsonbuf))
 	for _, v := range req.PlayersList {
-		log.LogD("OnRoomDetail PlayersList %v", v)
+		log.LogD("OnRoomDetail PlayersList userID:%d userProfile:%v", v.UserID, string(v.UserProfile))
 	}
 	log.LogD("OnRoomDetail WatchRoom %v", req.WatchRoom)
 	return
 }
 
 // 设置房间属性回调
-func (d *GsDefaultHandler) OnSetRoomProperty(req map[string]interface{}) (err error) {
+func (d *App) OnSetRoomProperty(req map[string]interface{}) (err error) {
 	log.LogD(" OnSetRoomProperty %v", req)
 	return
 }
 
 // 房间连接回调
-func (d *GsDefaultHandler) OnHotelConnect(req map[string]interface{}) (err error) {
+func (d *App) OnHotelConnect(req map[string]interface{}) (err error) {
 	log.LogD(" OnHotelConnect %v", req)
 	return
 }
 
 // 消息广播
-func (d *GsDefaultHandler) OnReceiveEvent(req *defines.MsOnReciveEvent) (err error) {
+func (d *App) OnReceiveEvent(req *defines.MsOnReciveEvent) (err error) {
 	// log.LogD(" OnReceiveEvent %v", string(req.CpProto))
 	d.Example_Push(req)
 	return
 }
 
 // 房间断开
-func (d *GsDefaultHandler) OnDeleteRoom(req map[string]interface{}) (err error) {
-	log.LogD(" OnHotelCloseConnect %v", req)
+func (d *App) OnDeleteRoom(req map[string]interface{}) (err error) {
+	log.LogD(" OnDeleteRoom %v", req)
 	return
 }
 
 // 连接房间检测回调
-func (d *GsDefaultHandler) OnHotelCheckin(req map[string]interface{}) (err error) {
+func (d *App) OnHotelCheckin(req map[string]interface{}) (err error) {
 	log.LogD(" OnHotelCheckin %v", req)
 	return
 }
 
 // 设置帧同步
-func (d *GsDefaultHandler) OnSetFrameSyncRate(req *defines.MsFrameSyncRateNotify) (err error) {
+func (d *App) OnSetFrameSyncRate(req *defines.MsFrameSyncRateNotify) (err error) {
 	log.LogD(" OnHotelSetFrameSyncRate %v", req)
 	return
 }
 
 // 帧数据更新
-func (d *GsDefaultHandler) OnFrameUpdate(req *defines.MsFrameDataList) (err error) {
+func (d *App) OnFrameUpdate(req *defines.MsFrameDataList) (err error) {
+	// log.LogD(" OnFrameUpdate %v", req)
 	for _, v := range req.Items {
-		log.LogD(" OnFrameUpdate  len [%d]  CpProto [%s], Timestamp [%d]", len(req.Items), string(v.CpProto), v.Timestamp)
+		log.LogD(" OnFrameUpdate roomID 【%d】 length【%d】 CpProto [%s], SrcUserID [%d] , Timestamp [%d]", req.RoomID, len(req.Items), v.CpProto, v.SrcUserID, v.Timestamp)
 	}
 	return
 }
 
-func (d *GsDefaultHandler) Example_Push(req *defines.MsOnReciveEvent) {
+func (d *App) Example_Push(req *defines.MsOnReciveEvent) {
 	var optMap map[string]interface{}
 	if err := json.Unmarshal(req.CpProto, &optMap); err != nil {
 		log.LogE("event message Unmarshal error %v", err)
 		return
 	}
-	// log.LogD("event message [%v]", optMap)
+
 	cmd := optMap["cmd"].(string)
+	log.LogD("event message [%v]", optMap)
 	switch cmd {
 	case "createRoom":
 		d.example_createRoom(req.GameID)
@@ -187,7 +207,7 @@ func (d *GsDefaultHandler) Example_Push(req *defines.MsOnReciveEvent) {
 }
 
 // 创建房间 示例
-func (d *GsDefaultHandler) example_createRoom(gameID uint32) {
+func (d *App) example_createRoom(gameID uint32) {
 	crtm := new(defines.MsCreateRoomReq)
 	crtm.GameID = gameID
 	crtm.Ttl = 600
